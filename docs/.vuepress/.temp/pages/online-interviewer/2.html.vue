@@ -1,0 +1,73 @@
+<template><div><h1 id="你好-面试官-我用java-list-狂怼面试官" tabindex="-1"><a class="header-anchor" href="#你好-面试官-我用java-list-狂怼面试官" aria-hidden="true">#</a> 你好，面试官 | 我用Java List 狂怼面试官~</h1>
+<p>本期是【<strong>你好，面试官</strong>】系列文章的第<strong>2</strong>期，持续更新中.....。</p>
+<p>回复&quot;<strong>我要进大厂</strong>&quot;获取思维导图，目前还在更新中，从小白到大厂~</p>
+<h2 id="小龙有话说" tabindex="-1"><a class="header-anchor" href="#小龙有话说" aria-hidden="true">#</a> 小龙有话说</h2>
+<p>本期会模拟面试 List 相关内容。</p>
+<p><code v-pre>本期题目选自 ——2022届春招 京东 二面</code></p>
+<h2 id="面试现场" tabindex="-1"><a class="header-anchor" href="#面试现场" aria-hidden="true">#</a> 面试现场</h2>
+<p>叮叮叮......</p>
+<p>面试官：“你好，我是XX面试官，请问是小龙吗？”</p>
+<p>小龙：“您好，面试官，我是小龙”</p>
+<p>面试官：“好的，现在有空吗，我们开始面试吧”</p>
+<p>小龙：“嗯嗯，准备好啦”</p>
+<p>.......</p>
+<p>other questions</p>
+<p>.......</p>
+<p>面试官：“我看你简历上有提到熟悉Java集合相关，还看过源码对吧？”</p>
+<p>小龙：“是的”</p>
+<p>面试官：“好的，那你平时开发中经常用的集合有哪些呢？”</p>
+<p>小龙：“嗯~，平时主要使用 Collection、Map 两个类别的集合。Collection 下 用的比较多的是 List、Set 接口的相关实现类，Map 下用得比较多的是 HashMap、TreeMap、LinkedHashMap这些。”</p>
+<p>面试官：“好的，我们一个一个来。你有提到 List ,那你能简单说说什么时候用 List 吗？”</p>
+<p>小龙：“List 接口元素是有序的并且可重复，Set 接口元素是无序的只接收一次，具有去重性，因此我们可以结合二者的特点做出选择。然后 List 某些实现类比如 ArryList 由于底层实现是数组，可以支持索引下标随机访问，因此可以结合它的这些特性去考虑”</p>
+<p>面试官：“好的，那你能讲讲你经常使用的 List 下的实现类吗？”</p>
+<p>小龙：“List 下比较常用的是 ArryList，LinkedList。</p>
+<p>小龙：“ ArrayList 底层是数组实现，由于可以支持下标访问，查询数据快。但是它非线程安全，并且在写入数据时，由于数组复制需要时间，并且扩容需要实例化新数组也要时间，因此写入数据慢，而且假如当插入元素后刚触发扩容机制，会导致浪费很多空间。”</p>
+<p>小龙：”我们可以看看具体内部源码实现。“</p>
+<div class="language-text ext-text line-numbers-mode"><pre v-pre class="language-text"><code>// 查询元素
+public E get(int index) {
+	rangeCheck(index);					// 检查是否越界
+	return elementData(index);
+}
+// 顺序添加元素
+public boolean add(E e) {
+	ensureCapacityInternal(size + 1);  	// 扩容机制
+	elementData[size++] = e;
+	return true;
+}
+// 从数组中间添加元素
+public void add(int index, E element) {
+	rangeCheckForAdd(index);			// 数组下标越界检查
+	ensureCapacityInternal(size + 1);  	// 扩容机制
+	System.arraycopy(elementData, index, elementData, index + 1, size - index); // 复制数组
+	elementData[index] = element;		// 替换元素
+	size++;
+}
+// 从数组中删除元素
+private void fastRemove(int index) {
+	modCount++;
+	int numMoved = size - index - 1;
+	if (numMoved > 0)
+		System.arraycopy(elementData, index+1, elementData, index, numMoved);
+	elementData[--size] = null; // clear to let GC do its work
+}
+
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>小龙：”从源码中可以得知，<strong>ArrayList在执行查询操作时</strong>：1、先判断下标是否越界。2、然后在直接通过下标从数组中返回元素。“</p>
+<p>小龙：”<strong>ArrayList在执行顺序添加操作时</strong>：1、通过扩容机制判断原数组是否还有空间，若没有则重新实例化一个空间更大的新数组，把旧数组的数据拷贝到新数组中。2、在新数组的最后一位元素添加值。“</p>
+<p>小龙：”<strong>ArrayList在执行中间插入操作时</strong>：1、先判断下标是否越界。2、扩容。3、若插入的下标为i，则通过复制数组的方式将i后面的所有元素，往后移一位。4、新数据替换下标为 i 的旧元素。删除也是一样：只是数组往前移了一位，最后一个元素设置为 null，等待 JVM垃圾回收。“</p>
+<p>小龙：”从上面的源码分析，我们可以看出 <strong>ArrayList 快在下标定位，慢在数组复制</strong>。“</p>
+<p>小龙：”不过，您可能会问。**能否将每次扩容的长度设置大点，减少扩容的次数，从而提高效率？**其实每次扩容的长度大小是很有讲究的。若扩容的长度太大，会造成大量的闲置空间；若扩容的长度太小，会造成频发的扩容(数组复制)，效率更低“</p>
+<p>小龙：“而 LinkedList 底层是基于链表，由于访问元素需要变量链表导致查询慢，写数据、删除数据便只需要修改指针的指向，因此速度快，同样它也是非线程安全的。”</p>
+<p>面试官：”好的，刚才我听你提过 ArrayList 的扩容，你能讲讲它的扩容机制吗？“</p>
+<p>独白：”wc，这是往死里薅啊....“</p>
+<p>小龙：”刚才我们也看过源码啦，可见 ArrayList 扩容：添加元素时使用 ensureCapacityInternal() 方法来保证容量足够，如果不够时，需要使用 grow() 方法进行扩容“</p>
+<p>小龙：”新容量的大小为 oldCapacity + (oldCapacity &gt;&gt; 1)，即 oldCapacity+oldCapacity/2。其中 oldCapacity &gt;&gt; 1 需要取整，所以新容量大约是旧容量的 1.5 倍左右。（oldCapacity 为偶数就是 1.5 倍，为奇数就是 1.5 倍-0.5）“</p>
+<p>小龙：”扩容操作需要调用 Arrays.copyOf() 把原数组整个复制到新数组中，这个操作代价很高，因此最好在创建 ArrayList 对象时就指定大概的容量大小，减少扩容操作的次数，最好会利用 modCount 记录结构修改次数。“</p>
+<p>面试官：”好小伙，基础不错。再问一下，你之前也有说这些都是非线程安全的，那当遇到需要考虑并发问题时，你怎么办呢？“</p>
+<p>独白：”好家伙，我就知道你又要这样问，得好我早就把八股给你准备好了。“</p>
+<p>小龙：”谈到线程安全，想必肯定都知道Vector，Vector 和 ArrayList 差不多，不过它对数据操作的方法都加了synchronized，因此它是线程安全的，不过由于加了 synchronized，线程同步，导致 Vector 性能很差。“</p>
+<p>面试官：”那有什么解决办法吗？“</p>
+<p>小龙：”可以使用<code v-pre>Collections.synchronizedList(list)</code>方法或者使用 <code v-pre>CopyOnWriteArrayList</code> 集合“</p>
+<p>面试官：”噢？还知道<code v-pre>CopyOnWriteArrayList</code>，不错！那你能简单介绍一下这个集合吗？ “</p>
+<p>独白：”晕，这不是自己给自己挖坑吗....。“</p>
+<p>小龙：”“</p>
+</div></template>
